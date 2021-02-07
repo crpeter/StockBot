@@ -167,4 +167,4 @@ if __name__ == '__main__':
     today_date = today.strftime("%m/%d/%y")
 
     client = MyClient()
-    client.run('ODA3MTIxNjQzNjc1NDUxMzky.YBzYmw.IJMVIdt7c7j5uQpxy8qnZmLAJUM')
+    client.run('DISCORD_TOKEN')
