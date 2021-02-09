@@ -13,6 +13,8 @@ $what is it - Too easy
 $summary [TICKER] - Returns variety of different attributes
 $market cap [TICKER] - Returns current market cap of stock
 $dad joke - Returns a random dad joke
+$wsb [NUMBER OF POSTS] - Returns tickers of top posts on WallStreetBets
+
 """
 
 import discord
@@ -21,6 +23,9 @@ import bs4
 from datetime import date, datetime
 import json
 import time
+import praw
+import enchant
+import re
 
 
 class MyClient(discord.Client):
