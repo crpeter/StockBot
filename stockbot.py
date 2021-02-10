@@ -21,7 +21,10 @@ import bs4
 from datetime import date, datetime
 import json
 import time
+import sys
 
+sys.path.insert(1, './analysis')
+from treasury_yields import treasury_yields
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -166,5 +169,7 @@ if __name__ == '__main__':
     today = date.today()
     today_date = today.strftime("%m/%d/%y")
 
-    client = MyClient()
-    client.run('DISCORD_TOKEN')
+    # client = MyClient()
+    # client.run('DISCORD_TOKEN')
+    yield_man = treasury_yields()
+    yield_man.get_yields()
