@@ -13,6 +13,8 @@ $what is it - Too easy
 $summary [TICKER] - Returns variety of different attributes
 $market cap [TICKER] - Returns current market cap of stock
 $dad joke - Returns a random dad joke
+$wsb [NUMBER OF POSTS] - Returns tickers of top posts on WallStreetBets
+
 """
 
 import discord
@@ -22,8 +24,12 @@ from datetime import date, datetime
 import json
 import time
 import sys
+import praw
+import enchant
+import re
 
 sys.path.insert(1, './analysis')
+
 from treasury_yields import treasury_yields
 
 class MyClient(discord.Client):
@@ -161,6 +167,48 @@ class MyClient(discord.Client):
             await message.channel.send(setup)
             time.sleep(5)
             await message.channel.send(punchline)
+            
+        if msg.startswith('$wsb'):
+            posts = int(msg.split("$wsb ", 1)[1])
+
+            d = enchant.Dict("en_US")
+
+            client_id = 'CLIENT_ID'
+            client_secret = 'CLIENT_SECRET'
+            user_agent = 'APP_NAME'
+            username = 'REDDIT_USER'
+            password = 'REDDIT_PASSWORD'
+
+            reddit = praw.Reddit(client_id=client_id,
+                                 client_secret=client_secret,
+                                 username=username,
+                                 password=password,
+                                 user_agent=user_agent)
+
+            subreddit = reddit.subreddit('wallstreetbets')
+
+            top_subreddit = subreddit.new(limit=posts)
+
+            words_collection = []
+            for submission in top_subreddit:
+                title = submission.title
+                title_words = title.split()
+                words_collection.append(title_words)
+
+            all_tickers = []
+            non_ticker = ['PSA','WSB','DIY']
+            for i in words_collection:
+                for word in i:
+                    reword = re.compile('[^a-zA-Z]')
+                    word = reword.sub('', word)
+                    if word.isupper() and 5 > len(word) > 1 and d.check(word) == False and word not in non_ticker:
+                        all_tickers.append(word)
+            new_tickers = []
+            for i in all_tickers:
+                if i not in new_tickers:
+                    new_tickers.append(i)
+            print(f'{message.author} - {datetime.now()} - WSB Top Posts({posts}) request')
+            await message.channel.send(new_tickers) 
 
 
 
